@@ -10,7 +10,7 @@ import org.apache.pdfbox.text.PDFTextStripperByArea
 import scala.collection.mutable.ListBuffer
 import scala.util.matching.Regex
 
-object PDFtoEPUB {
+class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
 
   val regionStripper: PDFTextStripperByArea = {
     val rs: PDFTextStripperByArea = new PDFTextStripperByArea
@@ -252,14 +252,12 @@ object PDFtoEPUB {
     zip.write(content.getBytes)
   }
 
-  def main(args: Array[String]): Unit = {
-    println(s"Run converter for PDF file ${args(0)}")
-    println(s"Result file ${args(1)}")
+  def convert: Unit = {
 
-    val document: PDDocument = PDDocument.load(new File(args(0)))
+    val document: PDDocument = PDDocument.load(new File(pdfFilePath))
     println(s"Read document with pages: ${document.getNumberOfPages}")
 
-    val zip: ZipOutputStream = new ZipOutputStream(new FileOutputStream(args(1)))
+    val zip: ZipOutputStream = new ZipOutputStream(new FileOutputStream(epubFilePath))
 
     val manifest: StringBuffer = new StringBuffer
     val spine: StringBuffer = new StringBuffer
@@ -271,5 +269,14 @@ object PDFtoEPUB {
 
     document.close
     zip.close
+  }
+}
+
+object PDFtoEPUB {
+  def main(args: Array[String]): Unit = {
+    println(s"Run converter for PDF file ${args(0)}")
+    println(s"Result file ${args(1)}")
+
+    new PDFtoEPUBCConverter(args(0), args(1)).convert
   }
 }
