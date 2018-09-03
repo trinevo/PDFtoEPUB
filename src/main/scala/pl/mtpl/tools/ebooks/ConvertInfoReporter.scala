@@ -6,7 +6,7 @@ import scala.util.hashing.MurmurHash3
 
 class ConvertInfoReporter(val epubFilePath: String) {
 
-  private val generables: collection.mutable.Map[String, Int] = collection.mutable.TreeMap[String, Int]()
+  private val generables: collection.mutable.Map[String, (Int, Int)] = collection.mutable.TreeMap[String, (Int, Int)]()
 
   private val preambule: StringWriter = new StringWriter
 
@@ -25,7 +25,7 @@ class ConvertInfoReporter(val epubFilePath: String) {
   }
 
   def reportEntry(fileName: String, content: String): Unit = {
-    generables.put(fileName, MurmurHash3.bytesHash(content.getBytes))
+    generables.put(fileName, (content.size, MurmurHash3.bytesHash(content.getBytes)))
   }
 
   def generate(): Unit = {
@@ -41,7 +41,9 @@ class ConvertInfoReporter(val epubFilePath: String) {
       val sw: StringWriter = new StringWriter
       sw.write(entry._1)
       sw.write(" => ")
-      sw.write(entry._2.toString)
+      sw.write(entry._2._1.toString)
+      sw.write(" lines, hash=")
+      sw.write(entry._2._2.toString)
       sw.write('\n')
       bw.write(sw.toString)
     })

@@ -1,6 +1,7 @@
 Doc info: Title  : Accident: The Death of General Sikorski
 Doc info: Author : David Irving
 Doc info: Subject: Accident
+Doc info: Pages  : 227
 Structure: Chapter 1
 Structure: Chapter 2
 Structure: Chapter 3
@@ -40,29 +41,48 @@ Structure: Chapter 7
 Structure: Chapter 8
 Structure: Chapter 9
 Structure: Chapter 1943
-Contains 25 pages
-META-INF/container.xml => -1852420702
-content.opf => 1831002977
-content1.html => -188765684
-content10.html => -22955776
-content11.html => -572774690
-content12.html => -1220845992
-content13.html => 853896928
-content14.html => -559698594
-content15.html => -1687596801
-content16.html => -1868115777
-content17.html => -2000308411
-content18.html => 1412418197
-content19.html => -336942765
-content2.html => 732942652
-content20.html => -1957988060
-content21.html => 1534325288
-content3.html => -1165785069
-content4.html => -741185836
-content5.html => 113745576
-content6.html => -1029434443
-content7.html => 715461597
-content8.html => -1882813049
-content9.html => 1390458269
-mimetype => -1000808489
-toc.ncx => 345247665
+Contains 44 pages
+META-INF/container.xml => 237 lines, hash=-1852420702
+content.opf => 5376 lines, hash=718496793
+content1.html => 1439 lines, hash=120190586
+content10.html => 544 lines, hash=-852925143
+content11.html => 534 lines, hash=1991371292
+content12.html => 529 lines, hash=596914197
+content13.html => 527 lines, hash=-1947140845
+content14.html => 529 lines, hash=1239855900
+content15.html => 539 lines, hash=-1951867788
+content16.html => 532 lines, hash=1462106276
+content17.html => 531 lines, hash=414745021
+content18.html => 520 lines, hash=-1764355181
+content19.html => 3114 lines, hash=-2083884751
+content2.html => 531 lines, hash=1374834924
+content20.html => 63890 lines, hash=696209310
+content21.html => 20851 lines, hash=-1318132452
+content22.html => 548 lines, hash=726729567
+content23.html => 40471 lines, hash=-1246876954
+content24.html => 73153 lines, hash=1043227969
+content25.html => 7182 lines, hash=2036935602
+content26.html => 48027 lines, hash=-2105404835
+content27.html => 51944 lines, hash=2094905902
+content28.html => 33671 lines, hash=1787408381
+content29.html => 22547 lines, hash=-546174245
+content3.html => 556 lines, hash=160489806
+content30.html => 16370 lines, hash=1482388742
+content31.html => 6434 lines, hash=-1937601505
+content32.html => 9405 lines, hash=-1282419154
+content33.html => 16234 lines, hash=-423375972
+content34.html => 10205 lines, hash=471615553
+content35.html => 2355 lines, hash=214373621
+content36.html => 14380 lines, hash=610983305
+content37.html => 14498 lines, hash=2083235096
+content38.html => 7844 lines, hash=1396808743
+content39.html => 3464 lines, hash=-979695871
+content4.html => 526 lines, hash=2117962545
+content40.html => 14752 lines, hash=-376901289
+content5.html => 527 lines, hash=1672418469
+content6.html => 539 lines, hash=1287346475
+content7.html => 576 lines, hash=-720683913
+content8.html => 531 lines, hash=-700151765
+content9.html => 521 lines, hash=-445169479
+mimetype => 20 lines, hash=-1000808489
+toc.ncx => 6829 lines, hash=-183040290
