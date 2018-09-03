@@ -12,13 +12,13 @@ class DavidIrvingsAccidentL0Test extends FlatSpec with Matchers{
     PDFtoEPUB.main(Array[String]("src/test/resources/original.pdf", "target/ebook.epub"))
   }
 
-  /*"A DavidIrving's book" should "be correct" in {
-    val hashNewBook: Int = MurmurHash3.arrayHash(Files.readAllBytes(Paths.get("target/ebook.epub")))
-    val hashTemplateBook: Int = MurmurHash3.arrayHash(Files.readAllBytes(Paths.get("src/test/resources/ebook.epub")))
+  "A DavidIrving's book" should "be correct" in {
+    val hashNewBook: Int = MurmurHash3.arrayHash(Files.readAllBytes(Paths.get("target/ebook.epub.info")))
+    val hashTemplateBook: Int = MurmurHash3.arrayHash(Files.readAllBytes(Paths.get("src/test/resources/ebook.epub.info")))
     Assertions.assertResult(hashTemplateBook) {
       hashNewBook
     }
-  }*/
+  }
 
   "Matching chapter names" should "detect chapter" in {
     Assertions.assertResult(List("", "CHAPTER[1: “Soldiers Must Die”] ", "")){
