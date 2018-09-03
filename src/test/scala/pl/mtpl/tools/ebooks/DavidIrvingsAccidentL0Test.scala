@@ -22,13 +22,13 @@ class DavidIrvingsAccidentL0Test extends FlatSpec with Matchers{
 
   "Matching chapter names" should "detect chapter" in {
     Assertions.assertResult(List("", "CHAPTER[1: “Soldiers Must Die”] ", "")){
-      PDFtoEPUB.extractParagraphs("1: “Soldiers Must Die”")
+      new PDFtoEPUBCConverter(null, null).extractParagraphs("1: “Soldiers Must Die”")
     }
   }
 
   "Matching part names" should "detect part" in {
     Assertions.assertResult(List("", "PART[PART TWO: THE DISASTER] ", "")){
-      PDFtoEPUB.extractParagraphs("PART TWO: THE DISASTER")
+      new PDFtoEPUBCConverter(null, null).extractParagraphs("PART TWO: THE DISASTER")
     }
   }
 }
