@@ -2,13 +2,13 @@ package pl.mtpl.tools.ebooks
 
 import java.awt.geom.Rectangle2D
 import java.io._
-import java.util.regex.{Matcher, Pattern}
 import java.util.zip.{ZipEntry, ZipOutputStream}
 
 import org.apache.pdfbox.pdmodel.{PDDocument, PDPage}
 import org.apache.pdfbox.text.PDFTextStripperByArea
 
 import scala.collection.mutable.ListBuffer
+import scala.util.matching.Regex
 
 object PDFtoEPUB {
 
@@ -53,20 +53,25 @@ object PDFtoEPUB {
     val lines: Seq[String] = pageContent.split("\n").map(line => line.trim)
     var sw: StringWriter = new StringWriter
 
-    lines.foreach(line => {
-      if(line.matches("""\d+:.*""")) {
-        paragraphs += sw.toString
-        sw = new StringWriter
-        sw.append("CHAPTER[").append(line).append("] ")
-        paragraphs += sw.toString
-        sw = new StringWriter
-      } else if(line.matches("""PART [A-Z\s]+:.*""")) {
-          paragraphs += sw.toString
-          sw = new StringWriter
-          sw.append("PART[").append(line).append("] ")
-          paragraphs += sw.toString
-          sw = new StringWriter
-      } else {
+    def tag(line: String, tag: String): Unit = {
+      paragraphs += sw.toString
+      sw = new StringWriter
+      sw.append(tag).append("[").append(line).append("] ")
+      paragraphs += sw.toString
+      sw = new StringWriter
+    }
+
+    val chapters: Regex = """(\d+):.*""".r
+    val parts: Regex = """PART ([A-Z\s]+):.*""".r
+
+    lines.foreach(line => line match {
+      case chapters(chapter) => {
+        tag(line, "CHAPTER")
+      }
+      case parts(part) => {
+        tag(line, "PART")
+      }
+      case _ => {
         val dotPos: Int = line.lastIndexOf('.')
         sw.append(line).append(" ")
         if (dotPos == line.size - 1) {
@@ -81,20 +86,31 @@ object PDFtoEPUB {
     paragraphs.toList
   }
 
-  def cleanUp(entireBook: String): String = {
-    var cleanBook = entireBook
-    val pattern: String = "(?<a1>[A-Za-z])- (?<a2>[A-Za-z])"
-    val r: Pattern = Pattern.compile(pattern)
+  private var carryOversCnt: Int = 0
 
-    while(cleanBook.matches(pattern)) {
-      val m: Matcher = r.matcher(cleanBook)
-      if(m.find()) {
-        val left: String = m.group("a1")
-        val right: String = m.group("a2")
-        println(s"Replace ${left}- ${right} with ${left}${right}")
-        cleanBook = cleanBook.replace(s"${left}- ${right}", s"${left}${right}")
+  def performCleanup(book: String, left: String, right: String): String = {
+    carryOversCnt = carryOversCnt + 1
+    book
+      .replaceAll(s"${left}-\\s+${right}", s"${left}${right}")
+  }
+
+  def cleanUp(entireBook: String): String = {
+    var cleanBook: String = entireBook
+    val carryOversInOneLine: Regex = """(?i)(?s)([a-z])-\s+([a-z])""".r.unanchored
+    var doCleaning: Boolean = true
+
+    println(s"Book to clean contains ${cleanBook.size} characters")
+
+    while(doCleaning) {
+      cleanBook = cleanBook match {
+        case carryOversInOneLine(left, right) => performCleanup(cleanBook, left, right)
+        case _ => {
+          doCleaning = false
+          cleanBook
+        }
       }
     }
+    println(s"Book after cleaning contains ${cleanBook.size} characters, replaced ${carryOversCnt} carry-overs")
     cleanBook
   }
 
@@ -253,6 +269,7 @@ object PDFtoEPUB {
 
     generateDescriptors(zip, document, manifest, spine, toc)
 
+    document.close
     zip.close
   }
 }
