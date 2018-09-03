@@ -47,7 +47,7 @@ class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
     regionStripper.setStartPage(idx)
     regionStripper.setEndPage(idx)
     regionStripper.extractRegions(page)
-    regionStripper.getTextForRegion("content")
+    new String(regionStripper.getTextForRegion("content").getBytes("UTF-8"))
   }
 
   def extractParagraphs(pageContent: String): Seq[String] = {
@@ -132,11 +132,13 @@ class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
     var fileContent: StringWriter = new StringWriter
     beginFile(document, fileContent)
 
-    var idx = 0
-
     extractParagraphs(cleanedBook.toString).foreach(paragraph => {
-      idx = idx + 1
-
+      if(paragraph.contains("PART") || paragraph.contains("CHAPTER")) {
+        endFile(fileContent)
+        files += fileContent.toString
+        fileContent = new StringWriter
+        beginFile(document, fileContent)
+      }
       fileContent.write("<p class=")
       fileContent.write('"')
       fileContent.write("calibre1")
@@ -144,14 +146,8 @@ class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
       fileContent.write(">")
       fileContent.write(paragraph)
       fileContent.write("</p>\n")
-
-      if(idx % 50 == 0) {
-        endFile(fileContent)
-        files += fileContent.toString
-        fileContent = new StringWriter
-        beginFile(document, fileContent)
-      }
     })
+
     endFile(fileContent)
     files += fileContent.toString
     files
@@ -233,6 +229,7 @@ class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
     reporter.addPreambule(s"Title  : ${document.getDocumentInformation.getTitle}")
     reporter.addPreambule(s"Author : ${document.getDocumentInformation.getAuthor}")
     reporter.addPreambule(s"Subject: ${document.getDocumentInformation.getSubject}")
+    reporter.addPreambule(s"Pages  : ${document.getNumberOfPages}")
 
     addZipEntry(zip, "toc.ncx", s"""<?xml version='1.0' encoding='utf-8'?>
                                   |<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="eng">
@@ -261,10 +258,7 @@ class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
   }
 
   def convert(): Unit = {
-
     val document: PDDocument = PDDocument.load(new File(pdfFilePath))
-    println(s"Read document with pages: ${document.getNumberOfPages}")
-
     val zip: ZipOutputStream = new ZipOutputStream(new FileOutputStream(epubFilePath))
 
     val manifest: StringBuffer = new StringBuffer
