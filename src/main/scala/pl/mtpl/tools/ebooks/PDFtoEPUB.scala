@@ -12,6 +12,8 @@ import scala.util.matching.Regex
 
 class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
 
+  val reporter: ConvertInfoReporter = new ConvertInfoReporter(epubFilePath)
+
   val regionStripper: PDFTextStripperByArea = {
     val rs: PDFTextStripperByArea = new PDFTextStripperByArea
     rs.addRegion("content", new Rectangle2D.Double(0, 80, 550, 520))
@@ -64,23 +66,22 @@ class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
     val chapters: Regex = """(\d+):.*""".r
     val parts: Regex = """PART ([A-Z\s]+):.*""".r
 
-    lines.foreach(line => line match {
-      case chapters(chapter) => {
+    lines.foreach {
+      case line@chapters(chapter) =>
+        reporter.addStructure(s"Chapter $chapter")
         tag(line, "CHAPTER")
-      }
-      case parts(part) => {
+      case line@parts(part) =>
+        reporter.addStructure(s"Part $part")
         tag(line, "PART")
-      }
-      case _ => {
+      case line =>
         val dotPos: Int = line.lastIndexOf('.')
         sw.append(line).append(" ")
-        if (dotPos == line.size - 1) {
+        if (dotPos == line.length - 1) {
           // Very likely next paragraph
           paragraphs += sw.toString
           sw = new StringWriter
         }
-      }
-    })
+    }
 
     paragraphs += sw.toString
     paragraphs.toList
@@ -91,7 +92,7 @@ class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
   def performCleanup(book: String, left: String, right: String): String = {
     carryOversCnt = carryOversCnt + 1
     book
-      .replaceAll(s"${left}-\\s+${right}", s"${left}${right}")
+      .replaceAll(s"$left-\\s+$right", s"$left$right")
   }
 
   def cleanUp(entireBook: String): String = {
@@ -99,33 +100,34 @@ class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
     val carryOversInOneLine: Regex = """(?i)(?s)([a-z])-\s+([a-z])""".r.unanchored
     var doCleaning: Boolean = true
 
-    println(s"Book to clean contains ${cleanBook.size} characters")
+    println(s"Book to clean contains ${cleanBook.length} characters")
 
     while(doCleaning) {
       cleanBook = cleanBook match {
         case carryOversInOneLine(left, right) => performCleanup(cleanBook, left, right)
-        case _ => {
+        case _ =>
           doCleaning = false
           cleanBook
-        }
       }
     }
-    println(s"Book after cleaning contains ${cleanBook.size} characters, replaced ${carryOversCnt} carry-overs")
+    println(s"Book after cleaning contains ${cleanBook.length} characters, replaced $carryOversCnt carry-overs")
     cleanBook
   }
 
-  private def prepareFiles(document: PDDocument) : collection.Seq[String] = {
-    val paragraphsInFile: Int = 50
-    val files: collection.mutable.ListBuffer[String] = new collection.mutable.ListBuffer[String]
-
-    var entireBook: StringWriter = new StringWriter
-
+  /*
+    This goes via PDF API and creates pure text.
+   */
+  private def extractTextFromPDF(document: PDDocument): String = {
+    val entireBook: StringWriter = new StringWriter
     for(i <- 0 until document.getNumberOfPages) {
-      val pageContent: String = extractPageContent(document, i)
-      entireBook.append(pageContent)
+      entireBook.append(extractPageContent(document, i))
     }
+    entireBook.toString
+  }
 
-    val cleanedBook: String = cleanUp(entireBook.toString)
+  private def prepareFiles(document: PDDocument) : collection.Seq[String] = {
+    val files: collection.mutable.ListBuffer[String] = new collection.mutable.ListBuffer[String]
+    val cleanedBook: String = cleanUp(extractTextFromPDF(document))
 
     var fileContent: StringWriter = new StringWriter
     beginFile(document, fileContent)
@@ -143,7 +145,7 @@ class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
       fileContent.write(paragraph)
       fileContent.write("</p>\n")
 
-      if(idx % paragraphsInFile == 0) {
+      if(idx % 50 == 0) {
         endFile(fileContent)
         files += fileContent.toString
         fileContent = new StringWriter
@@ -165,9 +167,9 @@ class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
 
     files.foreach(file => {
       idx = idx + 1
-      val fileName: String = s"content${idx}.html"
-      val id: String = s"id${idx}"
-      addZipEntry(zip, s"content${idx}.html", file)
+      val fileName: String = s"content$idx.html"
+      val id: String = s"id$idx"
+      addZipEntry(zip, s"content$idx.html", file)
       manifest.append(s"    <item href=")
         .append('"').append(fileName).append('"')
         .append(" id=").append('"').append(id).append('"')
@@ -222,11 +224,15 @@ class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
                                        |    <dc:identifier id="uuid_id" opf:scheme="uuid">5de5766d-0eb5-4041-9518-54ceedf99614</dc:identifier>
                                        |    <dc:contributor opf:role="bkp">PDFtoEPUB</dc:contributor>
                                        |  </metadata>
-                                       |${manifest}
-                                       |${spine}
+                                       |$manifest
+                                       |$spine
                                        |  <guide/>
                                        |</package>
                                        |""".stripMargin)
+
+    reporter.addPreambule(s"Title  : ${document.getDocumentInformation.getTitle}")
+    reporter.addPreambule(s"Author : ${document.getDocumentInformation.getAuthor}")
+    reporter.addPreambule(s"Subject: ${document.getDocumentInformation.getSubject}")
 
     addZipEntry(zip, "toc.ncx", s"""<?xml version='1.0' encoding='utf-8'?>
                                   |<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="eng">
@@ -240,7 +246,7 @@ class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
                                   |  <docTitle>
                                   |    <text>${document.getDocumentInformation.getTitle}</text>
                                   |  </docTitle>
-                                  |  ${toc}
+                                  |  $toc
                                   |</ncx>""".stripMargin)
 
     addZipEntry(zip, "mimetype", "application/epub+zip")
@@ -250,9 +256,11 @@ class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
     val entry: ZipEntry = new ZipEntry(fileName)
     zip.putNextEntry(entry)
     zip.write(content.getBytes)
+
+    reporter.reportEntry(fileName, content)
   }
 
-  def convert: Unit = {
+  def convert(): Unit = {
 
     val document: PDDocument = PDDocument.load(new File(pdfFilePath))
     println(s"Read document with pages: ${document.getNumberOfPages}")
@@ -267,8 +275,10 @@ class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
 
     generateDescriptors(zip, document, manifest, spine, toc)
 
-    document.close
-    zip.close
+    document.close()
+    zip.close()
+
+    reporter.generate()
   }
 }
 
@@ -277,6 +287,6 @@ object PDFtoEPUB {
     println(s"Run converter for PDF file ${args(0)}")
     println(s"Result file ${args(1)}")
 
-    new PDFtoEPUBCConverter(args(0), args(1)).convert
+    new PDFtoEPUBCConverter(args(0), args(1)).convert()
   }
 }
