@@ -7,6 +7,7 @@ import java.util.zip.{ZipEntry, ZipOutputStream}
 import org.apache.pdfbox.pdmodel.{PDDocument, PDPage}
 import org.apache.pdfbox.text.PDFTextStripperByArea
 
+import scala.collection.SortedMap
 import scala.collection.mutable.ListBuffer
 import scala.util.matching.Regex
 
@@ -63,15 +64,15 @@ class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
       sw = new StringWriter
     }
 
-    val chapters: Regex = """(\d+):.*""".r
-    val parts: Regex = """PART ([A-Z\s]+):.*""".r
+    val chapters: Regex = """(\d+):(.*)""".r
+    val parts: Regex = """PART ([A-Z\s]+):(.*)""".r
 
     lines.foreach {
-      case line@chapters(chapter) =>
-        reporter.addStructure(s"Chapter $chapter")
+      case line@chapters(chapter, title) =>
+        reporter.addStructure(s"Chapter $chapter : $title")
         tag(line, "CHAPTER")
-      case line@parts(part) =>
-        reporter.addStructure(s"Part $part")
+      case line@parts(part, title) =>
+        reporter.addStructure(s"Part $part : $title")
         tag(line, "PART")
       case line =>
         val dotPos: Int = line.lastIndexOf('.')
@@ -125,17 +126,20 @@ class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
     entireBook.toString
   }
 
-  private def prepareFiles(document: PDDocument) : collection.Seq[String] = {
-    val files: collection.mutable.ListBuffer[String] = new collection.mutable.ListBuffer[String]
+  val files: collection.mutable.Map[String, String] = new collection.mutable.LinkedHashMap[String, String]
+
+  private def prepareFiles(document: PDDocument) : Unit = {
     val cleanedBook: String = cleanUp(extractTextFromPDF(document))
 
+    var name: String = "Prolog"
     var fileContent: StringWriter = new StringWriter
     beginFile(document, fileContent)
 
     extractParagraphs(cleanedBook.toString).foreach(paragraph => {
       if(paragraph.contains("PART") || paragraph.contains("CHAPTER")) {
         endFile(fileContent)
-        files += fileContent.toString
+        files.put(name, fileContent.toString)
+        name = paragraph
         fileContent = new StringWriter
         beginFile(document, fileContent)
       }
@@ -149,11 +153,10 @@ class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
     })
 
     endFile(fileContent)
-    files += fileContent.toString
-    files
+    files.put(name, fileContent.toString)
   }
 
-  def generateContentHTMLFiles(zip: ZipOutputStream, files: Seq[String], manifest: StringBuffer, spine: StringBuffer, toc: StringBuffer): Unit = {
+  def generateContentHTMLFiles(zip: ZipOutputStream): Unit = {
     var idx: Int = 0
     println(s"Prepared files ${files.size}")
 
@@ -165,7 +168,7 @@ class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
       idx = idx + 1
       val fileName: String = s"content$idx.html"
       val id: String = s"id$idx"
-      addZipEntry(zip, s"content$idx.html", file)
+      addZipEntry(zip, s"content$idx.html", file._2)
       manifest.append(s"    <item href=")
         .append('"').append(fileName).append('"')
         .append(" id=").append('"').append(id).append('"')
@@ -178,7 +181,7 @@ class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
 
       toc.append(s"    <navPoint id=").append('"').append(id).append('"').append(" playOrder=").append('"').append(idx).append('"').append(">").append('\n')
         .append("      <navLabel>\n")
-        .append("        <text>Part ").append(idx).append("</text>\n")
+        .append("        <text>").append(file._1).append("</text>\n")
         .append("      </navLabel>\n")
         .append("      <content src=").append('"').append(fileName).append('"').append("/>\n")
         .append("    </navPoint>\n")
@@ -201,7 +204,7 @@ class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
     toc.append("  </navMap>")
   }
 
-  def generateDescriptors(zip: ZipOutputStream, document: PDDocument, manifest: StringBuffer, spine: StringBuffer, toc: StringBuffer): Unit = {
+  def generateDescriptors(zip: ZipOutputStream, document: PDDocument): Unit = {
     addZipEntry(zip, "META-INF/container.xml", """<?xml version="1.0"?>
                                                  |<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
                                                  |   <rootfiles>
@@ -249,7 +252,7 @@ class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
     addZipEntry(zip, "mimetype", "application/epub+zip")
   }
 
-  def addZipEntry(zip: ZipOutputStream, fileName: String, content: String): Unit = {
+  private def addZipEntry(zip: ZipOutputStream, fileName: String, content: String): Unit = {
     val entry: ZipEntry = new ZipEntry(fileName)
     zip.putNextEntry(entry)
     zip.write(content.getBytes)
@@ -257,17 +260,19 @@ class PDFtoEPUBCConverter(val pdfFilePath: String, val epubFilePath: String) {
     reporter.reportEntry(fileName, content)
   }
 
+  private val manifest: StringBuffer = new StringBuffer
+  private val spine: StringBuffer = new StringBuffer
+  private val toc: StringBuffer = new StringBuffer
+
   def convert(): Unit = {
     val document: PDDocument = PDDocument.load(new File(pdfFilePath))
     val zip: ZipOutputStream = new ZipOutputStream(new FileOutputStream(epubFilePath))
 
-    val manifest: StringBuffer = new StringBuffer
-    val spine: StringBuffer = new StringBuffer
-    val toc: StringBuffer = new StringBuffer
+    prepareFiles(document)
 
-    generateContentHTMLFiles(zip, prepareFiles(document), manifest, spine, toc)
+    generateContentHTMLFiles(zip)
 
-    generateDescriptors(zip, document, manifest, spine, toc)
+    generateDescriptors(zip, document)
 
     document.close()
     zip.close()
