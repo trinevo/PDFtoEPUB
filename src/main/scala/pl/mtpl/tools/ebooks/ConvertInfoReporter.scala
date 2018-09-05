@@ -1,10 +1,11 @@
 package pl.mtpl.tools.ebooks
 
 import java.io.{BufferedWriter, FileWriter, StringWriter}
+import java.util
 
 import scala.util.hashing.MurmurHash3
 
-class ConvertInfoReporter(val epubFilePath: String) {
+class ConvertInfoReporter {
 
   private val generables: collection.mutable.Map[String, (Int, Int)] = collection.mutable.TreeMap[String, (Int, Int)]()
 
@@ -29,16 +30,55 @@ class ConvertInfoReporter(val epubFilePath: String) {
   }
 
   def generate(): Unit = {
-    val fow: FileWriter = new FileWriter(s"${epubFilePath}.info")
+    val fow: FileWriter = new FileWriter(s"${PDFtoEPUB.configuration.get.epubFilePath}.info")
     val bw: BufferedWriter = new BufferedWriter(fow)
 
+    implicit def confToString(x: Configuration): String = {
+      new StringWriter()
+        .append("pdfFilePath=").append(x.pdfFilePath).append("\n")
+        .append("epubFilePath=").append(x.epubFilePath).append("\n")
+        .append("skip={").append(x.skip).append("}\n")
+        .append("region={").append(x.region).append("}\n")
+        .toString
+    }
+
+    implicit def skipToString(x: Skip): String = {
+      new StringWriter()
+        .append("pages=[")
+        .append(util.Arrays.toString(x.pages))
+        .append("], arrays=[")
+        .append(if(x.arrays.isEmpty) "" else x.arrays.map(arr => util.Arrays.toString(arr)).reduce((sum, item) => s"${sum}, ${item}"))
+        .append("]")
+        .toString
+    }
+
+    implicit def regionToString(r: Region): String = {
+      new StringWriter()
+        .append("dimensions=[")
+        .append("x=")
+        .append(r.x.toString)
+        .append(", y=")
+        .append(r.y.toString)
+        .append(", weigth=")
+        .append(r.weight.toString)
+        .append(", heigth=")
+        .append(r.height.toString)
+        .append("]")
+        .toString
+    }
+
+    bw.append(PDFtoEPUB.configuration.get)
     bw.append(preambule.toString)
     bw.append(structure.toString)
 
-    bw.append(s"Contains ${generables.size} pages\n")
+    bw.append(s"Contains ${generables.size} zip entries (files)\n")
 
+    var counter: Int = 0
     generables.foreach(entry => {
+      counter = counter + 1
       val sw: StringWriter = new StringWriter
+      sw.write(counter.toString)
+      sw.write(". ")
       sw.write(entry._1)
       sw.write(" => ")
       sw.write(entry._2._1.toString)

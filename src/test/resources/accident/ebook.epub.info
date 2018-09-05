@@ -1,0 +1,33 @@
+pdfFilePath=src/test/resources/accident/original.pdf
+epubFilePath=target/accident_ebook.epub
+skip={pages=[[]], arrays=[[1, 8], [179, 227]]}
+region={dimensions=[x=0, y=80, weigth=550, heigth=520]}
+Doc info: Title  : Accident: The Death of General Sikorski
+Doc info: Author : David Irving
+Doc info: Subject: Accident
+Doc info: Pages  : 227
+Structure: Chapter 1 :  “Soldiers Must Die”
+Structure: Chapter 2 :  Six weeks too Soon
+Structure: Part TWO : 
+Structure: Chapter 3 :  Farce and Tragedy
+Structure: Chapter 4 :  Search and Inquire
+Structure: Chapter 5 :  Mr Churchill Kneels in
+Structure: Chapter 6 :  Mailbags and Manifests
+Structure: Chapter 7 :  The Unmentioned Issue
+Structure: Chapter 8 :  Post Mortem
+Structure: Chapter 9 :  Open Verdict
+Contains 14 zip entries (files)
+1. META-INF/container.xml => 237 lines, hash=-1852420702
+2. content.opf => 2166 lines, hash=586724945
+3. content1.html => 63886 lines, hash=166479187
+4. content10.html => 22515 lines, hash=450654642
+5. content2.html => 20822 lines, hash=-2137105292
+6. content3.html => 519 lines, hash=-1400648891
+7. content4.html => 40467 lines, hash=-1174165858
+8. content5.html => 73149 lines, hash=-1312901259
+9. content6.html => 7178 lines, hash=389084289
+10. content7.html => 47998 lines, hash=1422261841
+11. content8.html => 51940 lines, hash=1830742278
+12. content9.html => 33667 lines, hash=-1324661335
+13. mimetype => 20 lines, hash=-1000808489
+14. toc.ncx => 2325 lines, hash=1683928131
