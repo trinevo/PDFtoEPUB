@@ -1,13 +1,23 @@
 {
   "pdfFilePath" : "src/test/resources/accident/original.pdf",
   "epubFilePath" : "target/accident_ebook.epub",
+  "encoding": "UTF-8",
   "skip": {
     "arrays": [[1, 8], [179, 227]]
+  },
+  "contentsIndex": {
+    "pages": [3],
+    "chaptersRegExp": "(?<chapter>\\d+:.*) (?<pageno>\\d+)"
   },
   "region": {
     "x": 0,
     "y": 80,
     "weight": 550,
     "height": 520
+  },
+  "debug":{
+    "enabled":false,
+    "paragraphs":[],
+    "lines":[]
   }
 }

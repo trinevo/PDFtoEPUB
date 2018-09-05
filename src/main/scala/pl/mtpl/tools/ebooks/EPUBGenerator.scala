@@ -6,8 +6,13 @@ import java.util.zip.{ZipEntry, ZipOutputStream}
 import org.apache.pdfbox.pdmodel.PDDocument
 
 class EPUBGenerator(reporter: ConvertInfoReporter) {
+
+  private val pdf: PDFProcessor = new PDFProcessor(reporter)
+
   private val manifest: StringBuffer = new StringBuffer
+
   private val spine: StringBuffer = new StringBuffer
+
   private val toc: StringBuffer = new StringBuffer
 
   def generateDescriptors(zip: ZipOutputStream, document: PDDocument): Unit = {
@@ -146,13 +151,34 @@ class EPUBGenerator(reporter: ConvertInfoReporter) {
     thereIsAContent = false
   }
 
+  private def writeHTMLParagraph(fileContent: StringWriter, paragraph: String): Unit = {
+    fileContent.write("<p class=")
+    fileContent.write('"')
+    fileContent.write("calibre1")
+    fileContent.write('"')
+    fileContent.write(">")
+    fileContent.write(paragraph)
+    fileContent.write("</p>\n")
+  }
+
+  var paragraphNo: Int = 0
+
   def prepareFiles(document: PDDocument, paragraphs: Seq[String]) : Unit = {
-    var name: String = "Prolog"
+    var name: String = "CHAPTER[ARTIFICIAL PROLOG]"
     var fileContent: StringWriter = new StringWriter
     beginFile(document, fileContent)
+    writeHTMLParagraph(fileContent, name)
 
     paragraphs.foreach(paragraph => {
-      if(paragraph.contains("PART[") || paragraph.contains("CHAPTER[")) {
+      paragraphNo = paragraphNo + 1
+      if(PDFtoEPUB.debugParagraph(paragraphNo)) {
+        println(s"DEBUG Paragraph ${paragraphNo}|>")
+        println(paragraph)
+      }
+      if(paragraph.contains("CHAPTER[")) {
+        if(PDFtoEPUB.debugParagraph(paragraphNo)) {
+          println(s"DEBUG Paragraph ${paragraphNo}|> It is a CHAPTER header, ending previous paragraph $name")
+        }
         endFileProcessing(fileContent, name)
         name = paragraph
         fileContent = new StringWriter
@@ -160,20 +186,17 @@ class EPUBGenerator(reporter: ConvertInfoReporter) {
       }
       if(!paragraph.isEmpty) {
         thereIsAContent = true
-        fileContent.write("<p class=")
-        fileContent.write('"')
-        fileContent.write("calibre1")
-        fileContent.write('"')
-        fileContent.write(">")
-        fileContent.write(paragraph)
-        fileContent.write("</p>\n")
+        writeHTMLParagraph(fileContent, paragraph)
       }
     })
 
     endFileProcessing(fileContent, name)
   }
 
-  def convert(document: PDDocument, paragraphs: Seq[String], zip: ZipOutputStream): Unit = {
+  def convert(document: PDDocument, zip: ZipOutputStream): Unit = {
+    val chapterListPages: Seq[String] = pdf.extractChapterListFromPDF(document)
+    val cleanedBook: String = pdf.extractTextFromPDF(document)
+    val paragraphs: Seq[String] = pdf.extractParagraphs(chapterListPages, cleanedBook)
     prepareFiles(document, paragraphs)
     generateContentHTMLFiles(zip)
     generateDescriptors(zip, document)

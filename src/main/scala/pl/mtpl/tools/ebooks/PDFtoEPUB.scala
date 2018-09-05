@@ -9,23 +9,26 @@ import org.apache.pdfbox.pdmodel.PDDocument
 
 case class Skip(pages: Array[Int], arrays: Array[Array[Int]])
 case class Region(x: Int, y: Int, weight: Int, height: Int)
-case class Configuration(pdfFilePath: String, epubFilePath: String, skip: Skip, region: Region)
+case class ContentsIndex(pages: Array[Int], chaptersRegExp: String)
+case class Debug(enabled: Boolean, paragraphs: Array[Int], lines: Array[Int])
+case class Configuration(pdfFilePath: String,
+                         epubFilePath: String,
+                         encoding: String,
+                         skip: Skip,
+                         region: Region,
+                         contentsIndex: ContentsIndex,
+                         debug: Debug)
 
 class PDFtoEPUBCConverter {
-
-  val reporter: ConvertInfoReporter = new ConvertInfoReporter()
-
-  private val epub: EPUBGenerator = new EPUBGenerator(reporter)
-
-  private val pdf: PDFProcessor = new PDFProcessor(reporter)
 
   def convert(): Unit = {
 
     val document: PDDocument = PDDocument.load(new File(PDFtoEPUB.configuration.get.pdfFilePath))
     val zip: ZipOutputStream = new ZipOutputStream(new FileOutputStream(PDFtoEPUB.configuration.get.epubFilePath))
-    val cleanedBook: String = pdf.extractTextFromPDF(document)
 
-    epub.convert(document, pdf.extractParagraphs(cleanedBook), zip)
+    val reporter: ConvertInfoReporter = new ConvertInfoReporter()
+
+    new EPUBGenerator(reporter).convert(document, zip)
 
     document.close()
     zip.close()
@@ -41,17 +44,25 @@ object PDFtoEPUB {
     println(s"Run converter for file ${args(0)}")
 
     configuration = {
-      if(args(0).endsWith(".json")) {
-        implicit val formats = DefaultFormats
-        val jsonContent: String = new String(Files.readAllBytes(Paths.get(args(0))))
-        Some(net.liftweb.json.parse(jsonContent).extract[Configuration])
-      } else {
-        Some(new Configuration(args(0), if(args.length > 1) args(1) else s"${args(0)}.epub",
-          new Skip(Array.empty[Int], Array.empty[Array[Int]]),
-          new Region(0, 0, 0, 0)))
-      }
+      implicit val formats = DefaultFormats
+      val jsonContent: String = new String(Files.readAllBytes(Paths.get(args(0))))
+      Some(net.liftweb.json.parse(jsonContent).extract[Configuration])
     }
 
     new PDFtoEPUBCConverter().convert
+  }
+
+  def debugParagraph(paragraphNo: Int): Boolean = {
+    configuration.get.debug.enabled &&
+      configuration.get.debug.paragraphs.size > 1 &&
+      paragraphNo >= configuration.get.debug.paragraphs(0) &&
+      paragraphNo <= configuration.get.debug.paragraphs(1)
+  }
+
+  def debugLine(lineNo: Int): Boolean = {
+    configuration.get.debug.enabled &&
+      configuration.get.debug.lines.size > 1 &&
+      lineNo >= configuration.get.debug.lines(0) &&
+      lineNo <= configuration.get.debug.lines(1)
   }
 }
