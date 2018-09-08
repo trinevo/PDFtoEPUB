@@ -25,6 +25,19 @@ class ConvertInfoReporter {
     structure.write('\n')
   }
 
+  val batches: StringWriter = new StringWriter
+
+  def addBatch(batchType: String, entry: String): Unit = {
+    batches.write("--- ")
+    batches.write(batchType)
+    batches.write('\n')
+    batches.write("Size: ")
+    batches.write(entry.size.toString)
+    batches.write('\n')
+    batches.write(entry)
+    batches.write("---\n")
+  }
+
   def reportEntry(fileName: String, content: String): Unit = {
     generables.put(fileName, (content.size, MurmurHash3.bytesHash(content.getBytes)))
   }
@@ -39,6 +52,7 @@ class ConvertInfoReporter {
         .append("epubFilePath=").append(x.epubFilePath).append("\n")
         .append("skip={").append(x.skip).append("}\n")
         .append("region={").append(x.region).append("}\n")
+        .append("contentsIndex={").append(x.contentsIndex).append("}\n")
         .toString
     }
 
@@ -67,9 +81,20 @@ class ConvertInfoReporter {
         .toString
     }
 
+    implicit def contentsIndexToString(r: ContentsIndex): String = {
+      new StringWriter()
+        .append("pages=[")
+        .append(util.Arrays.toString(r.pages))
+        .append("], chaptersRegExp=")
+        .append(r.chaptersRegExp)
+        .append("]")
+        .toString
+    }
+
     bw.append(PDFtoEPUB.configuration.get)
     bw.append(preambule.toString)
     bw.append(structure.toString)
+    bw.append(batches.toString)
 
     bw.append(s"Contains ${generables.size} zip entries (files)\n")
 

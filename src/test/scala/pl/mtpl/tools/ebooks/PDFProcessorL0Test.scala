@@ -4,8 +4,11 @@ import org.scalatest.{Assertions, FlatSpec, Matchers}
 
 class PDFProcessorL0Test extends FlatSpec with Matchers {
   PDFtoEPUB.configuration = Some(new Configuration("", "",
+    "UTF-8",
     new Skip(Array.empty[Int], Array.empty[Array[Int]]),
-    new Region(0, 80, 550, 520)))
+    new Region(0, 80, 550, 520),
+    new ContentsIndex(Array.empty[Int], ""),
+    new Debug(false, Array.empty[Int], Array.empty[Int])))
 
   "Clean up book" should "remove all one line carry-overs" in {
     Assertions.assertResult("This is reassigned text that contains no carry-over words left after PDF formatted pages."){

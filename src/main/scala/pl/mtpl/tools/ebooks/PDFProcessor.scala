@@ -2,11 +2,12 @@ package pl.mtpl.tools.ebooks
 
 import java.awt.geom.Rectangle2D
 import java.io.StringWriter
+import java.nio.charset.Charset
 
 import org.apache.pdfbox.pdmodel.{PDDocument, PDPage}
 import org.apache.pdfbox.text.PDFTextStripperByArea
 
-import scala.collection.mutable.ListBuffer
+import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 import scala.util.matching.Regex
 
 class PDFProcessor(val reporter: ConvertInfoReporter) {
@@ -18,12 +19,12 @@ class PDFProcessor(val reporter: ConvertInfoReporter) {
     rs
   }
 
-  def extractPageContent(document: PDDocument, idx: Int): String = {
+  def extractPageContent(document: PDDocument, idx: Int, enc: String): String = {
     val page: PDPage = document.getPage(idx)
     regionStripper.setStartPage(idx)
     regionStripper.setEndPage(idx)
     regionStripper.extractRegions(page)
-    new String(regionStripper.getTextForRegion("content").getBytes("UTF-8"))
+    new String(regionStripper.getTextForRegion("content").getBytes(Charset.forName(enc)))
   }
 
   /*
@@ -35,15 +36,36 @@ class PDFProcessor(val reporter: ConvertInfoReporter) {
     !skip.pages.contains(no) && skip.arrays.filter(item => item(0) <= no && item(1) >= no).isEmpty
   }
 
+  def extractChapterListFromPDF(document: PDDocument): Seq[String] = {
+    val chapterPage: StringWriter = new StringWriter
+    val index: ContentsIndex = PDFtoEPUB.configuration.get.contentsIndex
+    val enc: String = PDFtoEPUB.configuration.get.encoding
+    Charset.forName(enc)
+    index.pages.foreach(pageNo => {
+      val page: String = extractPageContent(document, pageNo-1, enc)
+      chapterPage.append(page).append('\n')
+      reporter.addBatch(s"Chapter list page $pageNo", page)
+    })
+
+    val ab: ArrayBuffer[String] = new ArrayBuffer[String]()
+    chapterPage.toString.split("\n").foreach(line => {
+      index.chaptersRegExp.r.findAllIn(line).matchData.foreach(matched => {
+        ab.append(matched.group("chapter"))
+      })
+    })
+    ab
+  }
+
   /*
     This goes via PDF API and creates pure text.
    */
   def extractTextFromPDF(document: PDDocument): String = {
     val entireBook: StringWriter = new StringWriter
     val skip: Skip = PDFtoEPUB.configuration.get.skip
+    val enc: String = PDFtoEPUB.configuration.get.encoding
     for(i <- 0 until document.getNumberOfPages) {
       if(extractPage(i+1, skip)) {
-        entireBook.append(extractPageContent(document, i))
+        entireBook.append(extractPageContent(document, i, enc))
       }
     }
     cleanUp(entireBook.toString)
@@ -54,7 +76,7 @@ class PDFProcessor(val reporter: ConvertInfoReporter) {
     val carryOversInOneLine: Regex = """(?i)(?s)([a-z])-\s+([a-z])""".r.unanchored
     var doCleaning: Boolean = true
 
-    println(s"Book to clean contains ${cleanBook.length} characters")
+    reporter.addStructure(s"Characters in book : ${cleanBook.length}")
 
     while(doCleaning) {
       cleanBook = cleanBook match {
@@ -64,7 +86,8 @@ class PDFProcessor(val reporter: ConvertInfoReporter) {
           cleanBook
       }
     }
-    println(s"Book after cleaning contains ${cleanBook.length} characters, replaced $carryOversCnt carry-overs")
+    reporter.addStructure(s"Characters in leaned book : ${cleanBook.length}")
+    reporter.addStructure(s"Replaced carry-overs : $carryOversCnt")
     cleanBook
   }
 
@@ -76,7 +99,9 @@ class PDFProcessor(val reporter: ConvertInfoReporter) {
       .replaceAll(s"$left-\\s+$right", s"$left$right")
   }
 
-  def extractParagraphs(pageContent: String): Seq[String] = {
+  private var lineNo: Int = 0
+
+  def extractParagraphs(chaptersTitles: Seq[String], pageContent: String): Seq[String] = {
     val paragraphs: ListBuffer[String] = new ListBuffer[String]
     val lines: Seq[String] = pageContent.split("\n").map(line => line.trim)
     var sw: StringWriter = new StringWriter
@@ -89,17 +114,21 @@ class PDFProcessor(val reporter: ConvertInfoReporter) {
       sw = new StringWriter
     }
 
-    val chapters: Regex = """(\d+):(.*)""".r
-    val parts: Regex = """PART ([A-Z\s]+):(.*)""".r
-
-    lines.foreach {
-      case line@chapters(chapter, title) =>
-        reporter.addStructure(s"Chapter $chapter : $title")
+    if(PDFtoEPUB.configuration.get.debug.enabled) {
+      chaptersTitles.foreach(chapter => println(s"DEBUG PAGE |> Chapter title $chapter"))
+    }
+    lines.foreach(line => {
+      lineNo = lineNo + 1
+      if(PDFtoEPUB.debugLine(lineNo)) {
+        println(s"DEBUG PAGE |> Line >>$line<<")
+      }
+      if(chaptersTitles.contains(line.trim)) {
+        reporter.addStructure(s"Chapter $line")
         tag(line, "CHAPTER")
-      case line@parts(part, title) =>
-        reporter.addStructure(s"Part $part : $title")
-        tag(line, "PART")
-      case line =>
+        if(PDFtoEPUB.debugLine(lineNo)) {
+          println(s"DEBUG PAGE |> Mark as chapter")
+        }
+      } else {
         val dotPos: Int = line.lastIndexOf('.')
         sw.append(line).append(" ")
         if (dotPos == line.length - 1) {
@@ -107,7 +136,8 @@ class PDFProcessor(val reporter: ConvertInfoReporter) {
           paragraphs += sw.toString
           sw = new StringWriter
         }
-    }
+      }
+    })
 
     paragraphs += sw.toString
     paragraphs.toList

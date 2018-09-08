@@ -1,0 +1,23 @@
+{
+  "pdfFilePath" : "src/test/resources/hitlerswar/original.pdf",
+  "epubFilePath" : "target/hitlerswar_ebook.epub",
+  "encoding": "UTF-8",
+  "skip": {
+    "arrays": [[1, 6], [871, 974]]
+  },
+  "contentsIndex": {
+    "pages": [5,6],
+    "chaptersRegExp": "(\\d+) (?<chapter>.+)"
+  },
+  "region": {
+    "x": 0,
+    "y": 160,
+    "weight": 550,
+    "height": 520
+  },
+  "debug":{
+    "enabled":false,
+    "paragraphs":[1, 4],
+    "lines":[1, 50]
+  }
+}
