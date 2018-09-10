@@ -5,6 +5,7 @@ import org.scalatest.{Assertions, FlatSpec, Matchers}
 class PDFProcessorL0Test extends FlatSpec with Matchers {
   PDFtoEPUB.configuration = Some(new Configuration("", "",
     "UTF-8",
+    300,
     new Skip(Array.empty[Int], Array.empty[Array[Int]]),
     new Region(0, 80, 550, 520),
     new ContentsIndex(Array.empty[Int], ""),

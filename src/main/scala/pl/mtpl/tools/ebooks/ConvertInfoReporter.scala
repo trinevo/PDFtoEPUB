@@ -53,6 +53,7 @@ class ConvertInfoReporter {
         .append("skip={").append(x.skip).append("}\n")
         .append("region={").append(x.region).append("}\n")
         .append("contentsIndex={").append(x.contentsIndex).append("}\n")
+        .append("htmlLimit={").append(x.htmlLimit.toString).append("}\n")
         .toString
     }
 
@@ -107,7 +108,7 @@ class ConvertInfoReporter {
       sw.write(entry._1)
       sw.write(" => ")
       sw.write(entry._2._1.toString)
-      sw.write(" lines, hash=")
+      sw.write(" bytes, hash=")
       sw.write(entry._2._2.toString)
       sw.write('\n')
       bw.write(sw.toString)

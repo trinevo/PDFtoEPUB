@@ -2,6 +2,7 @@
   "pdfFilePath" : "src/test/resources/accident/original.pdf",
   "epubFilePath" : "target/accident_ebook.epub",
   "encoding": "UTF-8",
+  "htmlLimit": 100000,
   "skip": {
     "arrays": [[1, 8], [179, 227]]
   },

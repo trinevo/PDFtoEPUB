@@ -3,7 +3,6 @@ package pl.mtpl.tools.ebooks
 import java.io._
 import java.nio.file.{Files, Paths}
 import java.util.zip.ZipOutputStream
-
 import net.liftweb.json.DefaultFormats
 import org.apache.pdfbox.pdmodel.PDDocument
 
@@ -14,6 +13,7 @@ case class Debug(enabled: Boolean, paragraphs: Array[Int], lines: Array[Int])
 case class Configuration(pdfFilePath: String,
                          epubFilePath: String,
                          encoding: String,
+                         htmlLimit: Int,
                          skip: Skip,
                          region: Region,
                          contentsIndex: ContentsIndex,

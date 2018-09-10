@@ -2,6 +2,7 @@
   "pdfFilePath" : "src/test/resources/hitlerswar/original.pdf",
   "epubFilePath" : "target/hitlerswar_ebook.epub",
   "encoding": "UTF-8",
+  "htmlLimit": 100000,
   "skip": {
     "arrays": [[1, 6], [871, 974]]
   },

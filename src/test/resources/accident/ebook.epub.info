@@ -3,6 +3,7 @@ epubFilePath=target/accident_ebook.epub
 skip={pages=[[]], arrays=[[1, 8], [179, 227]]}
 region={dimensions=[x=0, y=80, weigth=550, heigth=520]}
 contentsIndex={pages=[[3]], chaptersRegExp=(?<chapter>\d+:.*) (?<pageno>\d+)]}
+htmlLimit={100000}
 Doc info: Title  : Accident: The Death of General Sikorski
 Doc info: Author : David Irving
 Doc info: Subject: Accident
@@ -10,7 +11,7 @@ Doc info: Pages  : 227
 Structure: Characters in book : 355864
 Structure: Characters in leaned book : 352679
 Structure: Replaced carry-overs : 222
-Structure: Chapter 1: “Soldiers Must Die”
+Structure: Chapter 1: “Soldiers Must Die�?
 Structure: Chapter 2: Six weeks too Soon
 Structure: Chapter 3: Farce and Tragedy
 Structure: Chapter 4: Search and Inquire
@@ -24,7 +25,7 @@ Contents
 Acknowledgements 5
 List of Persons 6
 part one
-1: “Soldiers Must Die” 9
+1: “Soldiers Must Die�? 9
 2: Six weeks too Soon 39
 part two: 49
 THE DISASTER 49
@@ -38,7 +39,7 @@ THE UNANSWERED QUESTIONS 127
 8: Post Mortem 153
 9: Open Verdict 153
 Notes and Sources 163
-1:  “Soldiers Must Die” 163
+1:  “Soldiers Must Die�? 163
 2:  Six Weeks too Soon 170
 3: Farce and Tragedy 172
 4: Search  and Inquire 176
@@ -49,15 +50,15 @@ Notes and Sources 163
 9: Open Verdict 203
 ---
 Contains 12 zip entries (files)
-1. META-INF/container.xml => 237 lines, hash=-1852420702
-2. content.opf => 1955 lines, hash=-996610561
-3. content1.html => 63886 lines, hash=166479187
-4. content2.html => 20871 lines, hash=30105899
-5. content3.html => 40467 lines, hash=-1174165858
-6. content4.html => 79829 lines, hash=-76818721
-7. content5.html => 47998 lines, hash=1422261841
-8. content6.html => 51940 lines, hash=1830742278
-9. content7.html => 33667 lines, hash=-1324661335
-10. content8.html => 22515 lines, hash=450654642
-11. mimetype => 20 lines, hash=-1000808489
-12. toc.ncx => 1975 lines, hash=771351673
+1. META-INF/container.xml => 237 bytes, hash=-1852420702
+2. content.opf => 1955 bytes, hash=-996610561
+3. content1.html => 63886 bytes, hash=-1547651884
+4. content2.html => 20871 bytes, hash=-2121277803
+5. content3.html => 40467 bytes, hash=-1244464368
+6. content4.html => 79829 bytes, hash=-627441273
+7. content5.html => 47998 bytes, hash=-586143753
+8. content6.html => 51940 bytes, hash=1300899454
+9. content7.html => 33667 bytes, hash=-1807683881
+10. content8.html => 22515 bytes, hash=-382659564
+11. mimetype => 20 bytes, hash=-1000808489
+12. toc.ncx => 1991 bytes, hash=754649693

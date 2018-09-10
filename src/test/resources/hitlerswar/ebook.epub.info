@@ -3,20 +3,21 @@ epubFilePath=target/hitlerswar_ebook.epub
 skip={pages=[[]], arrays=[[1, 6], [871, 974]]}
 region={dimensions=[x=0, y=160, weigth=550, heigth=520]}
 contentsIndex={pages=[[5, 6]], chaptersRegExp=(\d+) (?<chapter>.+)]}
+htmlLimit={100000}
 Doc info: Title  : Cincinnati 2002 leaflet 1
 Doc info: Author : David Irving
 Doc info: Subject: Cincinnati 2002 leaflet 1
 Doc info: Pages  : 974
-Structure: Characters in book : 2158436
-Structure: Characters in leaned book : 2146054
+Structure: Characters in book : 2158439
+Structure: Characters in leaned book : 2146057
 Structure: Replaced carry-overs : 350
 Structure: Chapter Prologue: The Nugget
 Structure: Chapter Dictator by Consent
 Structure: Chapter Triumph of the Will
-Structure: Chapter �?One Day, the World’
+Structure: Chapter ‘One Day, the World’
 Structure: Chapter First Lady
 Structure: Chapter Goddess of Fortune
-Structure: Chapter �?Green’
+Structure: Chapter ‘Green’
 Structure: Chapter The Other Side of Hitler
 Structure: Chapter Whetting the Blade
 Structure: Chapter Munich
@@ -27,17 +28,17 @@ Structure: Chapter Extreme Unction
 Structure: Chapter The Major Solution
 Structure: Chapter Pact with the Devil
 Structure: Chapter Entr’acte: His First Silesian War
-Structure: Chapter �?White’
+Structure: Chapter ‘White’
 Structure: Chapter Overtures
 Structure: Chapter Incidents
 Structure: Chapter Clearing the Decks
-Structure: Chapter �?We Must Destroy Them Too!’
+Structure: Chapter ‘We Must Destroy Them Too!’
 Structure: Chapter Hors d’Œuvre
 Structure: Chapter The Warlord at the Western Front
 Structure: Chapter The Big Decision
 Structure: Chapter The Dilemma
 Structure: Chapter Molotov
-Structure: Chapter The �?Barbarossa’ Directive
+Structure: Chapter The ‘Barbarossa’ Directive
 Structure: Chapter Let Europe Hold its Breath
 Structure: Chapter Behind the Door
 Structure: Chapter A Bitter Victory
@@ -49,7 +50,7 @@ Structure: Chapter Cold Harvest
 Structure: Chapter A Test of Endurance
 Structure: Chapter Hitler Takes Command
 Structure: Chapter Hitler’s Word is Law
-Structure: Chapter �?Blue’
+Structure: Chapter ‘Blue’
 Structure: Chapter The Black Spot for Halder
 Structure: Chapter Africa and Stalingrad
 Structure: Chapter Trauma and Tragedy
@@ -57,20 +58,20 @@ Structure: Chapter Retreat
 Structure: Chapter Silence of the Tomb
 Structure: Chapter Clutching at Straws
 Structure: Chapter Correcting the Front Line
-Structure: Chapter �?Axis’
+Structure: Chapter ‘Axis’
 Structure: Chapter Feelers to Stalin
-Structure: Chapter �?And So It Will Be, Mein Führer!’
+Structure: Chapter ‘And So It Will Be, Mein Führer!’
 Structure: Chapter Trouble from Providence
 Structure: Chapter The Most Reviled
 Structure: Chapter Man with a Yellow Leather Briefcase
-Structure: Chapter �?Do You Recognise My Voice?’
+Structure: Chapter ‘Do You Recognise My Voice?’
 Structure: Chapter He Who Rides a Tiger
 Structure: Chapter Rommel Gets a Choice
 Structure: Chapter On the Brink of a Volcano
 Structure: Chapter The Gamble
 Structure: Chapter Waiting for a Telegram
 Structure: Chapter Hitler Goes to Ground
-Structure: Chapter �?Eclipse’
+Structure: Chapter ‘Eclipse’
 --- Chapter list page 5
 Size: 835
 Contents
@@ -78,10 +79,10 @@ vii Introduction
 1 Prologue: The Nugget
 13 Dictator by Consent
 33 Triumph of the Will
-43 �?One Day, the World’
+43 ‘One Day, the World’
 53 First Lady
 67 Goddess of Fortune
-83 �?Green’
+83 ‘Green’
 95 The Other Side of Hitler
 103 Whetting the Blade
 113 Munich
@@ -92,17 +93,17 @@ vii Introduction
 187 The Major Solution
 199 Pact with the Devil
 215 Entr’acte: His First Silesian War
-223 �?White’
+223 ‘White’
 237 Overtures
 249 Incidents
 261 Clearing the Decks
-271 �?We Must Destroy Them Too!’
+271 ‘We Must Destroy Them Too!’
 281 Hors d’Œuvre
 295 The Warlord at the Western Front
 309 The Big Decision
 323 The Dilemma
 335 Molotov
-345 The �?Barbarossa’ Directive
+345 The ‘Barbarossa’ Directive
 353 Let Europe Hold its Breath
 363 Behind the Door
 373 A Bitter Victory
@@ -117,7 +118,7 @@ Size: 741
 461 A Test of Endurance
 473 Hitler Takes Command
 485 Hitler’s Word is Law
-501 �?Blue’
+501 ‘Blue’
 511 The Black Spot for Halder
 523 Africa and Stalingrad
 539 Trauma and Tragedy
@@ -125,87 +126,87 @@ Size: 741
 567 Silence of the Tomb
 579 Clutching at Straws
 593 Correcting the Front Line
-607 �?Axis’
+607 ‘Axis’
 623 Feelers to Stalin
-635 �?And So It Will Be, Mein Führer!’
+635 ‘And So It Will Be, Mein Führer!’
 649 Trouble from Providence
 663 The Most Reviled
 681 Man with a Yellow Leather Briefcase
-697 �?Do You Recognise My Voice?’
+697 ‘Do You Recognise My Voice?’
 715 He Who Rides a Tiger
 731 Rommel Gets a Choice
 747 On the Brink of a Volcano
 767 The Gamble
 779 Waiting for a Telegram
 795 Hitler Goes to Ground
-811 �?Eclipse’
+811 ‘Eclipse’
 839 Author’s Notes
 842 Author’s notes and sources
 ---
 Contains 66 zip entries (files)
-1. META-INF/container.xml => 237 lines, hash=-1852420702
-2. content.opf => 7729 lines, hash=-1252528793
-3. content1.html => 74413 lines, hash=871436535
-4. content10.html => 23753 lines, hash=-1823783724
-5. content11.html => 49101 lines, hash=928037108
-6. content12.html => 49056 lines, hash=936965879
-7. content13.html => 39728 lines, hash=1823439162
-8. content14.html => 33470 lines, hash=193375380
-9. content15.html => 16068 lines, hash=-153370744
-10. content16.html => 30713 lines, hash=-295359439
-11. content17.html => 43273 lines, hash=883941073
-12. content18.html => 12941 lines, hash=-59648405
-13. content19.html => 33885 lines, hash=-1081964477
-14. content2.html => 23363 lines, hash=-1329135487
-15. content20.html => 31133 lines, hash=-1070202990
-16. content21.html => 27519 lines, hash=-1850143748
-17. content22.html => 23822 lines, hash=-2099757315
-18. content23.html => 27854 lines, hash=-1634682501
-19. content24.html => 32128 lines, hash=1823241715
-20. content25.html => 39111 lines, hash=-1133010801
-21. content26.html => 37060 lines, hash=-1576884878
-22. content27.html => 30214 lines, hash=1962279448
-23. content28.html => 25604 lines, hash=-1449536561
-24. content29.html => 21940 lines, hash=72552462
-25. content3.html => 51055 lines, hash=545443690
-26. content30.html => 25343 lines, hash=1927603575
-27. content31.html => 27041 lines, hash=-119800942
-28. content32.html => 28832 lines, hash=1950022366
-29. content33.html => 41766 lines, hash=1782117548
-30. content34.html => 28626 lines, hash=-92812902
-31. content35.html => 36448 lines, hash=-229516106
-32. content36.html => 50135 lines, hash=669378122
-33. content37.html => 44129 lines, hash=-1397993905
-34. content38.html => 31745 lines, hash=-1679051044
-35. content39.html => 32204 lines, hash=-1073950373
-36. content4.html => 23767 lines, hash=-476212883
-37. content40.html => 43990 lines, hash=-44269658
-38. content41.html => 28450 lines, hash=312962401
-39. content42.html => 31423 lines, hash=887948157
-40. content43.html => 39476 lines, hash=-1850813718
-41. content44.html => 32645 lines, hash=1405751358
-42. content45.html => 35280 lines, hash=1529881539
-43. content46.html => 33866 lines, hash=893443871
-44. content47.html => 38443 lines, hash=745158518
-45. content48.html => 37828 lines, hash=519774367
-46. content49.html => 41919 lines, hash=722588963
-47. content5.html => 25674 lines, hash=1312069435
-48. content50.html => 33776 lines, hash=-1037520872
-49. content51.html => 36020 lines, hash=-1945800010
-50. content52.html => 37611 lines, hash=72658002
-51. content53.html => 41748 lines, hash=-391962846
-52. content54.html => 44276 lines, hash=1093203589
-53. content55.html => 48775 lines, hash=-371985881
-54. content56.html => 43859 lines, hash=-259388071
-55. content57.html => 42286 lines, hash=-275394059
-56. content58.html => 48681 lines, hash=593344060
-57. content59.html => 33712 lines, hash=-1592080090
-58. content6.html => 36141 lines, hash=-1103861796
-59. content60.html => 45128 lines, hash=-2136743063
-60. content61.html => 40020 lines, hash=1169405796
-61. content62.html => 73973 lines, hash=1620103345
-62. content7.html => 40028 lines, hash=1230517422
-63. content8.html => 31565 lines, hash=1323138931
-64. content9.html => 19445 lines, hash=212717355
-65. mimetype => 20 lines, hash=-1000808489
-66. toc.ncx => 11637 lines, hash=-1254839416
+1. META-INF/container.xml => 237 bytes, hash=-1852420702
+2. content.opf => 7729 bytes, hash=-1252528793
+3. content1.html => 74413 bytes, hash=-2033064223
+4. content10.html => 23753 bytes, hash=1786703216
+5. content11.html => 49101 bytes, hash=1235274879
+6. content12.html => 49056 bytes, hash=-2080687737
+7. content13.html => 39728 bytes, hash=-630283037
+8. content14.html => 33470 bytes, hash=-977460434
+9. content15.html => 16068 bytes, hash=-1323868919
+10. content16.html => 30713 bytes, hash=-1243216968
+11. content17.html => 43273 bytes, hash=1163371191
+12. content18.html => 12941 bytes, hash=1225686664
+13. content19.html => 33885 bytes, hash=468971024
+14. content2.html => 23363 bytes, hash=1676682677
+15. content20.html => 31133 bytes, hash=1665482046
+16. content21.html => 27519 bytes, hash=1496016223
+17. content22.html => 23822 bytes, hash=-1198679671
+18. content23.html => 27854 bytes, hash=996048124
+19. content24.html => 32128 bytes, hash=57810840
+20. content25.html => 39111 bytes, hash=-976054327
+21. content26.html => 37060 bytes, hash=-940358071
+22. content27.html => 30214 bytes, hash=1790663822
+23. content28.html => 25604 bytes, hash=2135042683
+24. content29.html => 21940 bytes, hash=-434609505
+25. content3.html => 51055 bytes, hash=-989734849
+26. content30.html => 25343 bytes, hash=1176109787
+27. content31.html => 27041 bytes, hash=-1010228794
+28. content32.html => 28832 bytes, hash=1933793361
+29. content33.html => 41766 bytes, hash=-815974258
+30. content34.html => 28626 bytes, hash=911269844
+31. content35.html => 36448 bytes, hash=-1969034986
+32. content36.html => 50135 bytes, hash=718897378
+33. content37.html => 44129 bytes, hash=-1306760215
+34. content38.html => 31746 bytes, hash=607753843
+35. content39.html => 32204 bytes, hash=1253021237
+36. content4.html => 23767 bytes, hash=-629712728
+37. content40.html => 43990 bytes, hash=1030937664
+38. content41.html => 28450 bytes, hash=4497066
+39. content42.html => 31423 bytes, hash=1473240170
+40. content43.html => 39476 bytes, hash=1249475270
+41. content44.html => 32645 bytes, hash=-302126366
+42. content45.html => 35280 bytes, hash=1943418391
+43. content46.html => 33866 bytes, hash=1425162678
+44. content47.html => 38443 bytes, hash=2121429618
+45. content48.html => 37828 bytes, hash=158392385
+46. content49.html => 41919 bytes, hash=-320141872
+47. content5.html => 25674 bytes, hash=859750538
+48. content50.html => 33776 bytes, hash=-447698320
+49. content51.html => 36021 bytes, hash=382426259
+50. content52.html => 37611 bytes, hash=-215773646
+51. content53.html => 41748 bytes, hash=-798936187
+52. content54.html => 44276 bytes, hash=-142318983
+53. content55.html => 48775 bytes, hash=-678068265
+54. content56.html => 43860 bytes, hash=-983420479
+55. content57.html => 42286 bytes, hash=-105589522
+56. content58.html => 48681 bytes, hash=2051500654
+57. content59.html => 33712 bytes, hash=1203074780
+58. content6.html => 36141 bytes, hash=1316633526
+59. content60.html => 45128 bytes, hash=1871551581
+60. content61.html => 40020 bytes, hash=-924468111
+61. content62.html => 73973 bytes, hash=-1496180053
+62. content7.html => 40028 bytes, hash=361717371
+63. content8.html => 31565 bytes, hash=-1169363758
+64. content9.html => 19445 bytes, hash=-286231538
+65. mimetype => 20 bytes, hash=-1000808489
+66. toc.ncx => 11761 bytes, hash=944277373

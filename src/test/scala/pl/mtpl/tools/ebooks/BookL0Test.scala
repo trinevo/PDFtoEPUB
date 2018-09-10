@@ -12,8 +12,8 @@ import scala.collection.JavaConverters._
 class BookL0Test extends FlatSpec {
 
   def compareInfos(name: String): Unit = {
-    val template: String = new String(Files.readAllBytes(Paths.get(s"src/test/resources/$name/ebook.epub.info"))).replaceAll("(?:\\n|\\r)", "")
-    val current: String = new String(Files.readAllBytes(Paths.get(s"target/${name}_ebook.epub.info"))).replaceAll("(?:\\n|\\r)", "")
+    val template: String = new String(Files.readAllBytes(Paths.get(s"src/test/resources/$name/ebook.epub.info")), PDFtoEPUB.configuration.get.encoding).replaceAll("(?:\\n|\\r)", "")
+    val current: String = new String(Files.readAllBytes(Paths.get(s"target/${name}_ebook.epub.info")), PDFtoEPUB.configuration.get.encoding).replaceAll("(?:\\n|\\r)", "")
 
     val templateLines: List[String] = template.split("\n").toList
     val currentLines: List[String] = current.split("\n").toList

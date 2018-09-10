@@ -146,7 +146,17 @@ class EPUBGenerator(reporter: ConvertInfoReporter) {
   private def endFileProcessing(fileContent: StringWriter, name: String): Unit = {
     if(thereIsAContent) {
       endFile(fileContent)
-      files.put(name, fileContent.toString)
+      var idx: Int = 0
+      var search: Boolean = true
+      while(search) {
+        val mapName = s"${name}.$idx"
+        if(!files.contains(mapName)) {
+          files.put(mapName, fileContent.toString)
+          search = false
+        } else {
+          idx = idx + 1
+        }
+      }
     }
     thereIsAContent = false
   }
@@ -183,7 +193,12 @@ class EPUBGenerator(reporter: ConvertInfoReporter) {
         name = paragraph
         fileContent = new StringWriter
         beginFile(document, fileContent)
+      } else if(fileContent.toString.size > PDFtoEPUB.configuration.get.htmlLimit) {
+        endFileProcessing(fileContent, name)
+        fileContent = new StringWriter
+        beginFile(document, fileContent)
       }
+
       if(!paragraph.isEmpty) {
         thereIsAContent = true
         writeHTMLParagraph(fileContent, paragraph)
